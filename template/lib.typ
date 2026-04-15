@@ -165,19 +165,25 @@
   ////////////////////////////////
   // setup headings
   set heading(numbering: "1.1", supplement: locale.chapter.title)
-  show heading: it => block({
-    if style != "pagecount" {
-      if style != "compact" {
+  show heading: it => {
+  if style != "pagecount" {
+    if style != "compact" {
+      block({
         set text(1.1em, weight: "semibold")
         numbering(it.numbering, ..counter(heading).at(it.location()))
         h(0.3cm)
         it.body
         v(0.2cm)
-      } else {
+      })
+    } else {
+      if it.level == 1 {
         it
+      } else {
+        block(below: 1.4em, it)
       }
     }
-  })
+  }
+}
   show heading.where(level: 1): it => {
     if style == "pagecount" {
       return
@@ -215,15 +221,17 @@
         counter(page).update(1)
       }
       pagebreak(weak: true)
+      set text(18pt)  // размер для Chapter
       if it.numbering != none {
-        it.supplement
-        [ ]
-        numbering(it.numbering, counter(heading).get().at(0))
+        block(
+          it.supplement
+          + [ ]
+          + numbering(it.numbering, counter(heading).get().at(0))
+        )
       }
-      linebreak()
-      it.body
-      linebreak()
-      v(.5cm)
+      set text(24pt)
+      block(it.body)
+      v(1.4em, weak: true)
     }
   }
 
