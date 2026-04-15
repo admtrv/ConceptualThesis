@@ -179,7 +179,7 @@
       if it.level == 1 {
         it
       } else {
-        block(below: 1.4em, it)
+        block(above: 2.5em, below: 1.5em, it)
       }
     }
   }
@@ -221,16 +221,16 @@
         counter(page).update(1)
       }
       pagebreak(weak: true)
-      set text(18pt)  // размер для Chapter
       if it.numbering != none {
         block(
-          it.supplement
-          + [ ]
-          + numbering(it.numbering, counter(heading).get().at(0))
+          text(18pt,
+            it.supplement
+            + [ ]
+            + numbering(it.numbering, counter(heading).get().at(0))
+          )
         )
       }
-      set text(24pt)
-      block(it.body)
+      block(text(24pt, it.body))
       v(1.4em, weak: true)
     }
   }
