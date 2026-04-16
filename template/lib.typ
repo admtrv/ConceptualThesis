@@ -179,7 +179,7 @@
       if it.level == 1 {
         it
       } else {
-        block(above: 2.5em, below: 1.5em, it)
+        block(above: 2.0em, below: 1.5em, it)
       }
     }
   }
