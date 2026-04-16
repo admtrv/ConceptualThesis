@@ -1,7 +1,7 @@
 #import "template/lib.typ": *
 
-#show raw.where(block: true): set text(size: 9.5pt)
-#show raw.where(block: false): set text(size: 11pt)
+#show raw.where(block: true): set text(size: 9pt)
+#show raw.where(block: false): set text(size: 10pt)
 
 #import "@preview/zebraw:0.6.1": *
 #show: zebraw.with(lang: false)
@@ -195,9 +195,7 @@ The library is built as a static library using CMake with no external dependenci
 
 The framework is evaluated along four directions. First, _integration effort_ is measured by deploying the library into a custom OpenGL engine and Godot Engine without modifying the library's and engine's source code. Second, _numerical accuracy_ is assessed by comparing simulated trajectories against the established ballistic calculator @jbm. Third, _runtime performance_ is profiled to confirm that the simulation loop is allocation-free and sustains real-time throughput with over a thousand simultaneous projectiles. Fourth, _terminal ballistics outcomes_ are validated through controlled impact experiments covering ricochet, penetration, multi-layer traversal, and embedding.
 
-
 == Risk assessment
-
 
 The strengths of the framework include a solid theoretical foundation grounded in established physical references. The modular architecture allows selective enablement of individual effects, making the library applicable across a wide range of game genres. The C/C++ implementation with no external dependencies ensures broad compatibility with major game projects. The library includes built-in rigid body and collision systems, so it can be used both as a supplement to an existing physics system and as a standalone solution. Cross-platform CI with automated testing reduces the risk of platform-specific regressions.
 
@@ -214,6 +212,92 @@ The following risks were identified along with their mitigation strategies:
 + _Single-threaded execution._ The simulation runs in a single thread, which may not fully utilize multi-core systems under heavy projectile loads. Mitigation: parallelization is the responsibility of the user's integration layer, but the architecture provides good prerequisites for it: the simulation loop is allocation-free, and there is no shared mutable state between individual projectiles.
 
 == Experimental reproducibility and integration
+
+The project is organized as three public GitHub repositories, all released under the MIT license:
+
+- `BulletPhysics` — the ballistic simulation library itself, which is the primary deliverable of this thesis. It contains the full source code, test suite, documentation, and CI pipeline. The library has no dependency on graphics or engine code.
+
+- `BulletRender` — a lightweight OpenGL-based rendering engine built specifically to visualize ballistic simulations. It handles rendering and window management but also has no dependency on physics or engine code.
+
+- `BulletEngine` — the game engine that connects `BulletPhysics` and `BulletRender` as independent modules, providing an ECS architecture that binds physics state to visual entities. It serves as the primary demonstration and validation platform: it is the environment in which the integration of `BulletPhysics` into a custom engine was validated, and all simulation samples were implemented and tested within this engine during development.
+
+The physics and graphics modules are fully decoupled and are connected only at the game engine level. No part of the project is subject to a non-disclosure agreement or any other access restriction. The MIT license permits unrestricted use, modification, and redistribution, including commercial applications.
+
+=== Build reproducibility
+
+The library is built with CMake and depends only on the C++ standard library, so it can be compiled on any system with a conforming C++ compiler without external packages. Google Test is used only for the test suite, organized in a separate `tests/` subdirectory, and is not required to build or use the library itself.
+
+Build reproduction requires only cloning the repository and compiling it with a standard compiler toolchain using the root `CMakeLists.txt`. The build definition is self-contained: it collects all source files from `src/` and exposes `src/` as a public include path. No additional setup scripts, environment variables, or configuration files are required.
+
+=== Continuous integration
+
+The library uses GitHub Actions for continuous integration. The pipeline is organized as four sequential stages, each implemented as a separate job:
+
++ _Build._ The library and test executable are compiled on three platforms (Linux with GCC, Windows with MSVC, macOS with AppleClang) in parallel using a matrix strategy. Each platform uploads its build artifacts for subsequent jobs.
+
++ _Test._ The compiled test binary is downloaded and executed on each platform. A non-zero exit code from Google Test fails the pipeline and prevents subsequent stages from running.
+
++ _Package._ Triggered only by version tags. Headers are extracted from the source tree (with implementation files removed), and the compiled static library is packaged into a platform-specific archive.
+
++ _Release._ Collects all platform archives and creates a GitHub Release. The release includes prebuilt binaries for all three platforms alongside the source code.
+
+On every push to `main`, the build and test stages execute automatically. When a version tag is pushed (e.g., `git tag 1.0.0 && git push origin 1.0.0`), all four stages execute and produce a release with prebuilt binaries for all three platforms. Users who do not wish to compile from source can download a ready-to-link binary from the latest release.
+
+=== Test reproducibility
+
+The test suite uses Google Test and targets the components most likely to break silently during refactoring. Since the tests run automatically in the CI pipeline on every push, manual test execution is unnecessary: an unnoticed broken component fails the pipeline immediately. @tab:tests summarizes the coverage.
+
+#figure(
+text(size: 10pt)[
+  #table(
+    columns: 3,
+    align: (left, left, left),
+    table.header([*Domain*], [*Test*], [*Purpose*]),
+    [Math], [TestVec3], [Vec3 operations ],
+    [Math], [TestIntegrator], [Integrators accuracy],
+    [Math], [TestAngles], [Degree/radian conversions],
+    [Math], [TestAlgorithms], [Linear interpolation],
+    [Geography], [TestCoordinates], [Geodetic $arrow.l.r$ ECEF $arrow.l.r$ ENU conversion],
+    [Geography], [TestCoordinateMapping], [Mapping to/from internal representation],
+    [External], [TestPhysicsWorld], [Construction correctness],
+    [External], [TestDragModel], [Mach-based $C_d$ lookup],
+    [External], [TestCoriolis], [Dependance on latitude],
+    [External], [TestSpinDrift], [Dependance on rifling twist direction ],
+    [Terminal], [TestImpact], [Impact outcomes],
+  )],
+  caption: [Test coverage summary.]
+) <tab:tests>
+
+The force models are direct transcriptions of established physical formulas and are not unit-tested separately. Runtime behavior and visual consistency were instead verified throughout development using simulation samples built within `BulletEngine`. Each sample organized in a separate `samples/` subdirectory. This is a self-contained `main()` configuration that exercises a specific aspect of the framework and can be compiled and run without additional setup beyond cloning the repository and building with CMake. @tab:samples lists the available samples.
+
+#figure(
+text(size: 10pt)[
+  #table(
+    columns: 2,
+    align: (left, left),
+    table.header([*Sample*], [*Purpose*]),
+    [basic-external], [External ballistics inspection],
+    [basic-terminal], [Terminal ballistics inspection],
+    [comparison-configs], [Progressive force configurations],
+    [comparison-integrators], [Integrators accuracy and cost comparison],
+    [comparison-costs], [Per-step computational cost comparison],
+    [benchmark-performance], [Scalability with increasing projectile count],
+    [test-allocations], [Heap activity during simulation loop],
+    [test-convergence], [Timestep convergence evaluation],
+  )],
+  caption: [Simulation samples overview.]
+) <tab:samples>
+
+=== Integration reproducibility
+
+The custom engine integration is the `BulletEngine` repository itself. It includes `BulletPhysics` and `BulletRender` as Git submodules, with the engine implementation in `src/` providing the ECS layer. All simulation samples are organized in `samples/`. A single `CMakeLists.txt` at the root builds the entire project, including both submodules as independent libraries and all samples, so that cloning the repository and running CMake is sufficient to reproduce the full set of evaluation scenarios.
+
+The Godot Engine integration is maintained in a separate repository (`BulletPhysicsGodot`). It likewise includes `BulletPhysics` as a submodule along with `godot-cpp` for the GDExtension C++ bindings. The integration source code in `src/` wraps the library's abstractions into Godot-native scene tree nodes. The repository also includes a demo project with an example scene in `project/`, allowing the integration to be verified directly within the Godot editor. A `CMakeLists.txt` builds the GDExtension shared library that Godot loads as a plugin, so that cloning the repository and running CMake is also sufficient to run sample verificational project.
+
+=== Data reproducibility
+
+The drag curve lookup tables (G1–G8, GL) used by the library are embedded in the source code as static arrays derived from published reference data @jbm-data. The other presets are likewise defined in the source. No external data files, databases, or runtime downloads are required.
+
 
 == Sustainability and environmental impact
 
