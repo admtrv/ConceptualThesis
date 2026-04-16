@@ -25,12 +25,12 @@
   ),
   abstract: (
     sk: [
-      Balistická simulácia priamo ovplyvňuje konzistentnosť hrateľnosti a hráčsku imerziu, ale často je zredukovaná na zjednodušené aproximácie, ktoré neodrážajú reálne správanie projektilu, alebo je zabudovaná do implementácií viazaných na konkrétny engine, čo obmedzuje prenositeľnosť a znovupoužiteľnosť. Existujúce nástroje sú buď marketplace assety viazané na určitý engine, alebo balistické kalkulátory nekompatibilné s real-time integráciou snímok po snímke. Na riešenie týchto problémov je predstavený framework balistickej simulácie nezávislý od enginu vo forme knižnice v C/C++, založený na overených fyzikálnych zákonoch a implementujúci pohyb projektilu prostredníctvom postupnej numerickej integrácie. Framework pokrýva vonkajšiu balistiku: gravitáciu, aerodynamický odpor, vplyvy atmosféry, vietor, efekty rotácie Zeme a gyroskopický úlet spôsobený rotáciou projektilu, ako aj terminálnu balistiku zahŕňajúcu odraz, prieraz a zastavenie v materiáli. Každý fyzikálny jav je zapuzdrený ako nezávislý komponent, čo umožňuje vývojárom zostaviť len moduly, ktoré ich projekt vyžaduje, a prispôsobiť simuláciu od arkádových hier po vysoko vernú vojenskú simuláciu. Fyzikálne modelovanie je explicitne oddelené od vykresľovania a kolíznych subsystémov prostredníctvom minimálnych abstraktných rozhraní, čo umožňuje znovupoužitie na rôznych platformách. Vykonaná evaluácia potvrdzuje, že framework spĺňa stanovené návrhové ciele: integrácia bola overená vo vlastnom OpenGL engine aj v Godot Engine bez úpravy zdrojového kódu, numerické výsledky zodpovedajú overenej balistickej referenčnej kalkulačke a profilovanie behu preukazuje, že výkon v reálnom čase zostáva stabilný aj pri viac ako tisícke súčasne letiacich projektilov.
+      Balistická simulácia priamo ovplyvňuje konzistentnosť hrateľnosti a hráčsku imerziu, ale často je zredukovaná na zjednodušené aproximácie, ktoré neodrážajú reálne správanie projektilu, alebo je zabudovaná do implementácií viazaných na konkrétny engine, čo obmedzuje prenositeľnosť a znovupoužiteľnosť. Existujúce nástroje sú buď marketplace assety viazané na určitý engine, alebo balistické kalkulátory nekompatibilné s real-time integráciou snímok po snímke. Na riešenie týchto problémov je predstavený framework balistickej simulácie nezávislý od enginu vo forme knižnice v #box[C/C++], založený na overených fyzikálnych zákonoch a implementujúci pohyb projektilu prostredníctvom postupnej numerickej integrácie. Framework pokrýva vonkajšiu balistiku: gravitáciu, aerodynamický odpor, vplyvy atmosféry, vietor, efekty rotácie Zeme a gyroskopický úlet spôsobený rotáciou projektilu, ako aj terminálnu balistiku zahŕňajúcu odraz, prieraz a zastavenie v materiáli. Každý fyzikálny jav je zapuzdrený ako nezávislý komponent, čo umožňuje vývojárom zostaviť len moduly, ktoré ich projekt vyžaduje, a prispôsobiť simuláciu od arkádových hier po vysoko vernú vojenskú simuláciu. Fyzikálne modelovanie je explicitne oddelené od vykresľovania a kolíznych subsystémov prostredníctvom minimálnych abstraktných rozhraní, čo umožňuje znovupoužitie na rôznych platformách. Vykonaná evaluácia potvrdzuje, že framework spĺňa stanovené návrhové ciele: integrácia bola overená vo vlastnom OpenGL engine aj v Godot Engine bez úpravy zdrojového kódu, numerické výsledky zodpovedajú overenej balistickej referenčnej kalkulačke a profilovanie behu preukazuje, že výkon v reálnom čase zostáva stabilný aj pri viac ako tisícke súčasne letiacich projektilov.
 
       *Oblasť problematiky:* Balistické modelovanie, Pohyb projektilu, Fyzikálna simulácia, Architektúra herného enginu, Strieľačky
     ],
     en: [
-      Ballistic simulation directly affects gameplay consistency and player immersion, yet it is often reduced to simplified approximations that do not reflect real projectile behavior, or embedded within engine-specific implementations that limit portability and reuse. Existing tools are either marketplace assets tied to a concrete engine, or ballistic calculators incompatible with real-time frame-by-frame integration. To address these issues, an engine-independent ballistic simulation framework is introduced as a C/C++ library, grounded in established physical laws and implementing projectile motion through step-by-step numerical integration. The framework covers external ballistics: gravity, aerodynamic drag, atmospheric influences, wind, Earth rotation effects, and gyroscopic spin drift, as well as terminal ballistics including ricochet, penetration, and embedding. Each physical phenomenon is encapsulated as an independent component, letting developers assemble only the modules their project requires and tailor the simulation from arcade-style games to high-fidelity military simulators. Physical modeling is explicitly decoupled from rendering and collision subsystems via minimal abstract interfaces, enabling reuse across heterogeneous platforms. The conducted evaluation confirms that the framework satisfies the stated design objectives: integration was validated in both a custom OpenGL engine and Godot Engine without source modification, numerical results match an established ballistic reference calculator, and runtime profiling demonstrates real-time performance sustaining over a thousand simultaneous projectiles.
+      Ballistic simulation directly affects gameplay consistency and player immersion, yet it is often reduced to simplified approximations that do not reflect real projectile behavior, or embedded within engine-specific implementations that limit portability and reuse. Existing tools are either marketplace assets tied to a concrete engine, or ballistic calculators incompatible with real-time frame-by-frame integration. To address these issues, an engine-independent ballistic simulation framework is introduced as a #box[C/C++] library, grounded in established physical laws and implementing projectile motion through step-by-step numerical integration. The framework covers external ballistics: gravity, aerodynamic drag, atmospheric influences, wind, Earth rotation effects, and gyroscopic spin drift, as well as terminal ballistics including ricochet, penetration, and embedding. Each physical phenomenon is encapsulated as an independent component, letting developers assemble only the modules their project requires and tailor the simulation from arcade-style games to high-fidelity military simulators. Physical modeling is explicitly decoupled from rendering and collision subsystems via minimal abstract interfaces, enabling reuse across heterogeneous platforms. The conducted evaluation confirms that the framework satisfies the stated design objectives: integration was validated in both a custom OpenGL engine and Godot Engine without source modification, numerical results match an established ballistic reference calculator, and runtime profiling demonstrates real-time performance sustaining over a thousand simultaneous projectiles.
 
 
       *Keywords:* Ballistic modeling, Projectile motion, Physics simulation, Game engine architecture, Shooter games
@@ -39,19 +39,44 @@
   id: "FIIT-16768-127135",
   assignment: image("/zadanie.pdf"),
   lang: "en",
-  
+
   month: datetime.today().month(),
   current-date: datetime.today(),
 
   acknowledgment: [I would like to thank my supervisor for all the help and guidance I have received. I would also like to thank my family and friends for supporting during this work.],
 
   abbreviations-outline: (
+    ("MPMM", "Modified Point Mass Model"),
+    ("PC", "Personal Computer"),
+    ("USD", "United States Dollar"),
+    ("ISA", "International Standard Atmosphere"),
+    ("NASA", "The National Aeronautics and Space Administration"),
+    ("WGS 84", "World Geodetic System 1984"),
+    ("DMA","The Defence Mapping Agency"),
+    ("NATO", "North Atlantic Treaty Organization"),
+    ("API", "Application Programming Interface"),
+    ("6DOF", "Six Degrees of Freedom"),
+    ("RK2", "Second-Order Runge-Kutta"),
+    ("RK4", "Fourth-Order Runge-Kutta"),
+    ("POD", "Plain Old Data"),
+    ("ENU", "East-North-Up"),
+    ("ECEF", "Earth-Centered, Earth-Fixed"),
+    ("CI", "Continuous Integration"),
+    ("MIT", "Massachusetts Institute of Technology"),
+    ("ECS", "Entity Component System"),
+    ("GCC", "GNU Compiler Collection"),
+    ("MSVC", "Microsoft Visual C++"),
+    ("ISO", "International Organization for Standardization"),
+    ("CPU", "Central Processing Unit"),
+    ("FEI", "Faculty of Electrical Engineering and Information Technology"),
+    ("FIIT", "Faculty of Informatics and Information Technologies"),
+    ("STU", "Slovak University of Technology in Bratislava"),
   ),
 
   // figures-outline: true,
-  
+
   // tables-outline: true,
-  
+
   style: "compact",
 )
 
@@ -61,7 +86,7 @@
 
 Ballistic simulation is a core element of many game genres, directly affecting gameplay consistency and player immersion. Although shooting mechanics are widespread in modern games, their physical basis is often reduced to simplified approximations: fixed parabolic arcs, constant drag coefficients, or purely directional force vectors that do not reflect real projectile behavior. Existing solutions are either marketplace assets tied to specific game engines, or standalone ballistic calculators that, while physically accurate, compute complete trajectories in a single pass and are incompatible with the frame-by-frame integration that interactive applications require. Moreover, no open-source library bridges this gap.
 
-To address these issues, an engine-independent ballistic simulation framework is introduced as a C/C++ library, grounded in established physical laws and implementing projectile motion through step-by-step numerical integration. The framework models external ballistics progressively, from gravitational free flight through aerodynamic drag, atmospheric and environmental influences, Earth rotation effects, to gyroscopic spin drift following the Modified Point Mass Model. It also implements terminal ballistics covering ricochet, penetration, and embedding. Each physical phenomenon is encapsulated as an independent component, allowing developers to assemble only the required modules and tailor the simulation to the desired level of realism: from arcade-style games to high-fidelity military simulators.
+To address these issues, an engine-independent ballistic simulation framework is introduced as a #box[C/C++] library, grounded in established physical laws and implementing projectile motion through step-by-step numerical integration. The framework models external ballistics progressively, from gravitational free flight through aerodynamic drag, atmospheric and environmental influences, Earth rotation effects, to gyroscopic spin drift following the Modified Point Mass Model (MPMM). It also implements terminal ballistics covering ricochet, penetration, and embedding. Each physical phenomenon is encapsulated as an independent component, allowing developers to assemble only the required modules and tailor the simulation to the desired level of realism: from arcade-style games to high-fidelity military simulators.
 
 The evaluation confirms that the framework satisfies the stated design objectives. Integration with host engines is achieved through minimal abstract interfaces, validated by deploying the library into both a custom OpenGL engine and Godot Engine without source modification. Comparison with an established ballistic reference calculator showed comparable accuracy, and runtime profiling demonstrated an allocation-free simulation loop sustaining over a thousand simultaneous projectiles within real-time constraints.
 
@@ -72,7 +97,7 @@ Many video games feature weapons that fire projectiles: bullets, shells, arrows.
 
 This thesis builds a software library that simulates these effects for game developers. Each physical effect is a separate building block. A developer making a simple mobile game might only use gravity, while a developer building a realistic military simulator can enable everything: atmospheric conditions, Earth rotation, and spin effects. When the projectile hits something, the library has feature to determine what happens next: whether it punches through, bounces off, or gets stuck, depending on the material and the angle of impact.
 
-The library is written in C/C++ and is not tied to any particular game engine, meaning it can be plugged into different engines and custom game projects. Tests show that its results closely match professional ballistic calculators, and it runs fast enough to handle over a thousand projectiles simultaneously.
+The library is written in #box[C/C++] and is not tied to any particular game engine, meaning it can be plugged into different engines and custom game projects. Tests show that its results closely match professional ballistic calculators, and it runs fast enough to handle over a thousand projectiles simultaneously.
 
 
 = Introduction
@@ -103,13 +128,13 @@ The problem addressed in this thesis is therefore formulated as follows:
 
 *Conduct evaluation.* Validate the resulting framework against the stated design objectives through a series of controlled experiments, in order to demonstrate the applicability of the proposed solution.
 
-== Technical literature review 
+== Technical literature review
 
 Several commercial titles demonstrate the gameplay value of physically-based ballistics. In the Sniper Elite series, the bullet is affected by gravity and deflected by wind, requiring the player to compensate for both effects when aiming at distant targets @sniper-elite-v2-2012. The internal implementation is not publicly documented, and players note that the effects appear exaggerated, likely due to the compressed in-game distances. World of Tanks places greater emphasis on terminal ballistics, with the ricochet and multi-layer armor penetration system serving as the foundational gameplay mechanic @wot-armor-penetration. Arma 3 with the ACE3 Advanced Ballistics module @ace3-advanced-ballistics represents a near-ideal reference: it simulates ballistic coefficients, atmosphere influence with wind, Earth rotation effects, and spin drift caused by projectile rotation. However, all these implementations are internal to their respective commercial implementation and unavailable for reuse.
 
-Game engines represent comprehensive core systems that implement fundamental functionality including rendering pipelines, physics simulation, input processing, and asset management systems. These frameworks provide developers with the necessary tools to immediately start developing games. Along with the systems that were already implemented "out of box", their official marketplaces distribute community-created add-ons that extend engine functionality, and ballistic simulation is one such area where marketplace solutions exist. 
+Game engines represent comprehensive core systems that implement fundamental functionality including rendering pipelines, physics simulation, input processing, and asset management systems. These frameworks provide developers with the necessary tools to immediately start developing games. Along with the systems that were already implemented "out of box", their official marketplaces distribute community-created add-ons that extend engine functionality, and ballistic simulation is one such area where marketplace solutions exist.
 
-A comparative analysis of the most popular marketplace assets based on user ratings and download statistics for *Unity* @true-ballistics-unity @realistic-sniper-unity @bullet-ballistics-unity and *Unreal Engine* @weapon-ballistics-unreal @easy-ballistics-unreal @terminal-ballistics-unreal reveals significant variation in feature completeness. @table-marketplace summarizes the supported physical phenomena across both ecosystems. Only a few assets approach a solid feature set and serve as useful references, but still remain tightly bound to their host engine and cannot be reused outside of it. 
+A comparative analysis of the most popular marketplace assets based on user ratings and download statistics for *Unity* @true-ballistics-unity @realistic-sniper-unity @bullet-ballistics-unity and *Unreal Engine* @weapon-ballistics-unreal @easy-ballistics-unreal @terminal-ballistics-unreal reveals significant variation in feature completeness. @table-marketplace summarizes the supported physical phenomena across both ecosystems. Only a few assets approach a solid feature set and serve as useful references, but still remain tightly bound to their host engine and cannot be reused outside of it.
 
 #set table(stroke: (x, y) => (
   left: if x > 0 { 0.8pt },
@@ -144,7 +169,7 @@ The *Godot Asset Library* lacks comprehensive ballistic solutions entirely. The 
 
 *Standalone libraries* outside of engine ecosystems are primarily ballistic calculators designed for real-world marksmanship @gnu-ballistics that compute complete trajectories in a single pass, which is incompatible with frame-by-frame integration required by interactive applications. No discovered solution combines physical fidelity with a modular, engine-independent architecture.
 
-The gap in sources about ballistics as a software artifact motivated a study of both the physical and the software engineering literature separately, in order to combine them into a unified solution. The primary physical reference is McCoy's _Modern Exterior Ballistics_ @mccoy-modern, the most comprehensive treatment of projectile flight dynamics available. This work has become foundational in the field and is widely cited across a large number of ballistic research. The remaining physical models are drawn from domain-specific sources: the International Standard Atmosphere model from a NASA technical report by Talay @talay-nasa, the WGS-84 geodetic model by The United States Defense Mapping Agency @wgs-84, NATO's Modified Point Mass Model @stanag-4355, and other relevant works referenced throughout the thesis. On the software engineering side, Gregory's _Game Engine Architecture_ @gregory-game-engine is one of the principal references for the design of game engine subsystems, and it directly informed the architectural decisions in this work.
+The gap in sources about ballistics as a software artifact motivated a study of both the physical and the software engineering literature separately, in order to combine them into a unified solution. The primary physical reference is McCoy's _Modern Exterior Ballistics_ @mccoy-modern, the most comprehensive treatment of projectile flight dynamics available. This work has become foundational in the field and is widely cited across a large number of ballistic research. The remaining physical models are drawn from domain-specific sources: the International Standard Atmosphere (ISA) model from the NASA technical report by Talay @talay-nasa, the World Geodetic System 1984 (WGS 84) model by The Defence Mapping Agency (DMA) @wgs-84, NATO's MPMM @stanag-4355, and other relevant works referenced throughout the thesis. On the software engineering side, Gregory's _Game Engine Architecture_ @gregory-game-engine is one of the principal references for the design of game engine subsystems, and it directly informed the architectural decisions in this work.
 
 == Solution overview
 
@@ -167,15 +192,15 @@ This two-phase design (@fig:sequence-diagram) decouples environments from forces
 
 === Physical model
 
-_External ballistics_ covers gravitational acceleration, aerodynamic drag @mccoy-modern with drag curves varying by Mach number (G1–G8, GL) @applied-drag, atmospheric density effects driven by pressure, temperature, and humidity according to the International Standard Atmosphere @talay-nasa, wind, the Coriolis effect using the WGS-84 geodetic model @wgs-84, and gyroscopic spin drift following the Modified Point Mass Model @mccoy-modern @stanag-4355. Each of these phenomena is implemented as an independent force or environment module.
+_External ballistics_ covers gravitational acceleration, aerodynamic drag @mccoy-modern with drag curves varying by Mach number (G1–G8, GL) @applied-drag, atmospheric density effects driven by pressure, temperature, and humidity according to the ISA @talay-nasa, wind, the Coriolis effect using the WGS 84 model @wgs-84, and gyroscopic spin drift following the MPMM @mccoy-modern @stanag-4355. Each of these phenomena is implemented as an independent force or environment module.
 
 _Terminal ballistics_ implements three outcomes: ricochet, penetration with residual energy tracking, and embedding. The resolution is driven by material properties assigned to surfaces. The critical ricochet angle is computed via the Wijk model, penetration depth follows an energy-based formulation @energy-penetrarion, and the velocity after ricochet is decomposed into normal and tangential components with restitution and friction coefficients. The terminal subsystem is structured as a resolver-style component that consumes a compact input description and produces a structured outcome.
 
-The external ballistics model is limited to the Modified Point Mass formulation and does not implement a full six-degree-of-freedom 6DOF, which is in practice is not required for routine work in exterior ballistics @mccoy-modern. Terminal ballistics presents a different kind of limitation: this is inherently material-dependent and condition-dependent, and the published research is largely empirical, derived from experimental firing data @koene-ricochet @steel-ricochet @sand-ricochet @concrete-ricochet. The formulas used in this work are therefore approximations rooted in classical physics.
+The external ballistics model is limited to the MPMM formulation and does not implement a full Six Degrees of Freedom (6DOF), which is in practice is not required for routine work in exterior ballistics @mccoy-modern. Terminal ballistics presents a different kind of limitation: this is inherently material-dependent and condition-dependent, and the published research is largely empirical, derived from experimental firing data @koene-ricochet @steel-ricochet @sand-ricochet @concrete-ricochet. The formulas used in this work are therefore approximations rooted in classical physics.
 
 === Numerical integration
 
-The projectile state is advanced by step-by-step numerical integration rather than analytical solutions. All integration schemes are implemented as interchangeable strategy-like components (`IIntegrator`). The Euler method with one force evaluation per step, the Midpoint method (RK2) with two evaluations, and the classical RK4 method with four evaluations. Higher-order methods reduce truncation error at the cost of additional computations per step. The choice of integrator is a runtime parameter, allowing the developer to trade accuracy for performance depending on the application requirements.
+The projectile state is advanced by step-by-step numerical integration rather than analytical solutions. All integration schemes are implemented as interchangeable strategy-like components (`IIntegrator`). The Euler method with one force evaluation per step, the Second-Order Runge-Kutta (RK2) or Midpoint method with two evaluations, and the classical Fourth-Order Runge-Kutta (RK4) method with four evaluations. Higher-order methods reduce truncation error at the cost of additional computations per step. The choice of integrator is a runtime parameter, allowing the developer to trade accuracy for performance depending on the application requirements.
 
 A limitation of fixed-step integration is that accuracy depends on the timestep chosen by the host application. Adaptive step-size control, which could dynamically adjust integration detail based on trajectory curvature, is not implemented in the current version.
 
@@ -183,9 +208,9 @@ A limitation of fixed-step integration is that accuracy depends on the timestep 
 
 The rigid body is one of the most fundamental components of every physics engine @gregory-game-engine. The framework defines a minimal abstract interface `IPhysicsBody` to avoid duplicating the engine logic. It specifies only what the simulation pipeline requires: mass, position, velocity, and force accumulation. A concrete engine integration then requires only a thin adapter bridging the host engine's rigid body to this interface.
 
-The collision subsystem follows a similar approach. Unlike the rigid body, which participates in every simulation step, collision geometry is relevant only at the moment of impact @gregory-game-engine. The framework externalizes impact-related information into a POD structure `ImpactInfo` that the host engine populates upon detecting a collision and passes to the stateless resolver, which returns a classified outcome and post-impact state. This avoids excessive wrapping host engine's collision system.
+The collision subsystem follows a similar approach. Unlike the rigid body, which participates in every simulation step, collision geometry is relevant only at the moment of impact @gregory-game-engine. The framework externalizes impact-related information into a Plain Old Data (POD) structure `ImpactInfo` that the host engine populates upon detecting a collision and passes to the stateless resolver, which returns a classified outcome and post-impact state. This avoids excessive wrapping host engine's collision system.
 
-The library operates internally in the East-North-Up coordinate system, required for correct physical computations. A coordinate mapping, defined once at startup, allows the user to work entirely in their engine's native convention while the framework handles all conversions transparently.
+The library operates internally in the East-North-Up (ENU) coordinate system, required for correct physical computations. A coordinate mapping, defined once at startup, allows the user to work entirely in their engine's native convention while the framework handles all conversions transparently.
 
 === Build and distribution
 
@@ -197,9 +222,9 @@ The framework is evaluated along four directions. First, _integration effort_ is
 
 == Risk assessment
 
-The strengths of the framework include a solid theoretical foundation grounded in established physical references. The modular architecture allows selective enablement of individual effects, making the library applicable across a wide range of game genres. The C/C++ implementation with no external dependencies ensures broad compatibility with major game projects. The library includes built-in rigid body and collision systems, so it can be used both as a supplement to an existing physics system and as a standalone solution. Cross-platform CI with automated testing reduces the risk of platform-specific regressions.
+The strengths of the framework include a solid theoretical foundation grounded in established physical references. The modular architecture allows selective enablement of individual effects, making the library applicable across a wide range of game genres. The #box[C/C++] implementation with no external dependencies ensures broad compatibility with major game projects. The library includes built-in rigid body and collision systems, so it can be used both as a supplement to an existing physics system and as a standalone solution. Cross-platform CI with automated testing reduces the risk of platform-specific regressions.
 
-The weaknesses include the limitation of the external ballistics model to the Modified Point Mass formulation. The atmospheric model covers only the troposphere, which prevents simulation of transcontinental or high-altitude trajectories. Due to the inherently empirical nature of terminal ballistics and the absence of a universal analytical model, the terminal module is the weakest part of the framework. It covers the basic use cases, but there is clear room for improvement through deeper study of material science models.
+The weaknesses include the limitation of the external ballistics model to the MPMM formulation. The atmospheric model covers only the troposphere, which prevents simulation of transcontinental or high-altitude trajectories. Due to the inherently empirical nature of terminal ballistics and the absence of a universal analytical model, the terminal module is the weakest part of the framework. It covers the basic use cases, but there is clear room for improvement through deeper study of material science models.
 
 The following risks were identified along with their mitigation strategies:
 
@@ -219,13 +244,13 @@ The project is organized as three public GitHub repositories, all released under
 
 - `BulletRender` — a lightweight OpenGL-based rendering engine built specifically to visualize ballistic simulations. It handles rendering and window management but also has no dependency on physics or engine code.
 
-- `BulletEngine` — the game engine that connects `BulletPhysics` and `BulletRender` as independent modules, providing an ECS architecture that binds physics state to visual entities. It serves as the primary demonstration and validation platform: it is the environment in which the integration of `BulletPhysics` into a custom engine was validated, and all simulation samples were implemented and tested within this engine during development.
+- `BulletEngine` — the game engine that connects `BulletPhysics` and `BulletRender` as independent modules, providing an Entity Component System (ECS) architecture that binds physics state to visual entities. It serves as the primary demonstration and validation platform: it is the environment in which the integration of `BulletPhysics` into a custom engine was validated, and all simulation samples were implemented and tested within this engine during development.
 
 The physics and graphics modules are fully decoupled and are connected only at the game engine level. No part of the project is subject to a non-disclosure agreement or any other access restriction. The MIT license permits unrestricted use, modification, and redistribution, including commercial applications.
 
 === Build reproducibility
 
-The library is built with CMake and depends only on the C++ standard library, so it can be compiled on any system with a conforming C++ compiler without external packages. Google Test is used only for the test suite, organized in a separate `tests/` subdirectory, and is not required to build or use the library itself.
+The library is built with CMake and depends only on the #box[C++] standard library, so it can be compiled on any system with a conforming #box[C++] compiler without external packages. Google Test is used only for the test suite, organized in a separate `tests/` subdirectory, and is not required to build or use the library itself.
 
 Build reproduction requires only cloning the repository and compiling it with a standard compiler toolchain using the root `CMakeLists.txt`. The build definition is self-contained: it collects all source files from `src/` and exposes `src/` as a public include path. No additional setup scripts, environment variables, or configuration files are required.
 
@@ -292,7 +317,7 @@ text(size: 10pt)[
 
 The custom engine integration is the `BulletEngine` repository itself. It includes `BulletPhysics` and `BulletRender` as Git submodules, with the engine implementation in `src/` providing the ECS layer. All simulation samples are organized in `samples/`. A single `CMakeLists.txt` at the root builds the entire project, including both submodules as independent libraries and all samples, so that cloning the repository and running CMake is sufficient to reproduce the full set of evaluation scenarios.
 
-The Godot Engine integration is maintained in a separate repository (`BulletPhysicsGodot`). It likewise includes `BulletPhysics` as a submodule along with `godot-cpp` for the GDExtension C++ bindings. The integration source code in `src/` wraps the library's abstractions into Godot-native scene tree nodes. The repository also includes a demo project with an example scene in `project/`, allowing the integration to be verified directly within the Godot editor. A `CMakeLists.txt` builds the GDExtension shared library that Godot loads as a plugin, so that cloning the repository and running CMake is also sufficient to run sample verificational project.
+The Godot Engine integration is maintained in a separate repository (`BulletPhysicsGodot`). It likewise includes `BulletPhysics` as a submodule along with `godot-cpp` for the GDExtension #box[C++] bindings. The integration source code in `src/` wraps the library's abstractions into Godot-native scene tree nodes. The repository also includes a demo project with an example scene in `project/`, allowing the integration to be verified directly within the Godot editor. A `CMakeLists.txt` builds the GDExtension shared library that Godot loads as a plugin, so that cloning the repository and running CMake is also sufficient to run sample verificational project.
 
 === Data reproducibility
 
@@ -302,11 +327,11 @@ The drag curve lookup tables (G1–G8, GL) used by the library are embedded in t
 
 The most common cause of long-term software decay is dependency rot: external libraries change their APIs, build systems evolve, and package repositories eventually retire older versions. The proposed framework depends only on the #box[C++] standard library, which is governed by an ISO standard and remains stable across compiler generations. No third-party runtime dependencies, package managers, or platform-specific APIs are required. Google Test is used exclusively for the test suite and is not required for building or using the library itself. The implementation targets #box[C++17], a mature and widely supported revision of the language standard available across all major compiler toolchains. No compiler-specific extensions or other non-standard language features are used. As a result, the library can be built on any conforming system using CMake, while the risk of dependency breakage over time is substantially reduced.
 
-Long-term maintainability is further supported by the modular architecture. Each physical effect is encapsulated as an independent component behind a stable interfaces: `IForce`, `IEnvironment`, and `IIntegrator`, which allows new effects to be added and existing implementations to be replaced without modifying the rest of the codebase. 
+Long-term maintainability is further supported by the modular architecture. Each physical effect is encapsulated as an independent component behind a stable interfaces: `IForce`, `IEnvironment`, and `IIntegrator`, which allows new effects to be added and existing implementations to be replaced without modifying the rest of the codebase.
 
-The repository itself contains a `README.md` file with build and download instructions, and a `DOCUMENTATION.md` file providing an API overview and usage examples. The project is organized into a clear and conventional directory structure. The codebase is further structured through a consistent namespace hierarchy that reflects the conceptual decomposition of the framework and prevents collisions as the project grows. These measures improve readability and lower the cost of future maintenance. The project is hosted publicly on GitHub under the MIT license, allowing unrestricted forking, modification, and redistribution. This reduces dependence on a single maintainer and increases the likelihood that the framework will remain accessible and reusable in the long term. 
+The repository itself contains a `README.md` file with build and download instructions, and a `DOCUMENTATION.md` file providing an API overview and usage examples. The project is organized into a clear and conventional directory structure. The codebase is further structured through a consistent namespace hierarchy that reflects the conceptual decomposition of the framework and prevents collisions as the project grows. These measures improve readability and lower the cost of future maintenance. The project is hosted publicly on GitHub under the MIT license, allowing unrestricted forking, modification, and redistribution. This reduces dependence on a single maintainer and increases the likelihood that the framework will remain accessible and reusable in the long term.
 
-From an environmental perspective, the project does not involve machine learning, large-scale data processing, or permanently running cloud services. The library is a lightweight C++ static library with negligible build-time requirements. The CI pipeline runs on GitHub-hosted runners only on push events, avoiding continuous resource consumption. The simulation itself is designed to be computationally efficient, as the conducted evaluation confirmed minimal CPU and memory overhead even under heavy projectile loads.
+From an environmental perspective, the project does not involve machine learning, large-scale data processing, or permanently running cloud services. The library is a lightweight #box[C++] static library with negligible build-time requirements. The CI pipeline runs on GitHub-hosted runners only on push events, avoiding continuous resource consumption. The simulation itself is designed to be computationally efficient, as the conducted evaluation confirmed minimal CPU and memory overhead even under heavy projectile loads.
 
 == Employability
 
@@ -316,9 +341,7 @@ On the physics side, the work progressed from foundational mechanics into specia
 
 On the software side, the project resulted in a complete, publicly released #box[C++] product applicable across projects of different scale and requirements. #box[C++] remains the foundational language of the game industry, and writing a game engine from scratch is a valuable exercise for understanding how commercial engines are structured internally. The intention is to continue developing game engine beyond the thesis, progressively implementing the remaining core subsystems to arrive at a fully functional game engine.
 
-
 == Teamwork, diversity and inclusion
-
 
 The thesis was developed as an individual project. Supervision was primarily oriented towards the physics domain, which meant that detailed feedback was received on the physical modeling side, while the software architecture had to be explained by the author in the context of the physical requirements it serves, demonstrating the current state of implementation, justifying design decisions, and tracking milestones. The work also benefited from informal knowledge sharing within the facilities of both FEI and FIIT STU, including a shared Google Classroom group. Task management followed an iterative approach, where the implementation was progressively extended from a minimal functional core towards a more complete system, and the direction of further development was continuously discussed during supervision meetings.
 
@@ -348,51 +371,44 @@ From a diversity and inclusion perspective, the project explicitly avoids assump
 == Winter semester
 
 #figure(
-text(size: 9pt)[
-  #table(
-    columns: 3,
-    align: (center, left, left),
-    table.header(
-      [*Study Week*], [*Planned*], [*Completed*],
-    ),
-    [1],  [Set up repository and document.], [Initialized repository. Drafted thesis sections. Implemented graphics core.],
-    [2],  [Begin writing document.], [Wrote an introduction and outlined the problem.],
-    [3],  [Research existing solutions.], [Analyzed major existing solutions. Highlighted key features and implementation gaps.],
-    [4],  [Literature study.], [Reviewed literature.],
-    [5],  [Literature study.], [Implemented movement through kinematics.],
-    [6],  [Implement ballistic physics core.], [Considered implementation and chosen different path.],
-    [7],  [Implement ballistic physics core.], [Implemented movement through dynamics. The gravity force has been created.],
-    [8],  [Implement ballistic physics core.], [The drag force has been created. The influence of atmosphere and wind has been implemented.],
-    [9],  [Implement ballistic physics core.], [The Coriolis force has been created.],
-    [10], [Continue writing document.], [The lift force and Magnus force have been created.],
-    [11], [Continue writing document.], [Refactored codebase and improved architecture.],
-    [12], [Finalize winter checkpoint and prepare midterm report.], [Finalized report and prepared for submission.]
-  )]
+  text(size: 9pt)[
+    #table(
+      columns: (0.7fr, 1.7fr, 3fr),
+      align: (center, left, left),
+      table.header(
+        [*Week*], [*Plan*], [*Result*],
+      ),
+      [1. − 2.],   [Set up environment],            [Initialized repository, implemented renderer],
+      [3. − 4.],   [Research existing solutions],   [Studied existing solutions, outlined report structure],
+      [5. − 6.],   [Study literature],              [Reviewed literature, implemented basic movement],
+      [7. − 8.],   [Implement external ballistics], [Implemented gravity, drag, atmosphere, wind, Coriolis effect],
+      [9. − 10.],  [Write document],                [Implemented lift and Magnus forces, refactored architecture],
+      [11. − 12.], [Prepare midterm report],        [Finalized and submitted report],
+    )
+  ]
 )
+
+*Self-Evaluation.* The work plan for the winter semester is considered satisfied and exceeded. The depth of the physical research led to a substantially more thorough treatment than originally anticipated, resulting in a comprehensive discussion of the physical foundations of external ballistics in the final report.
+
 
 == Summer semester
 
 #figure(
-text(size: 9pt)[
-  #table(
-    columns: 3,
-    align: (center, left, left),
-    table.header(
-      [*Study Week*], [*Planned*], [*Completed*],
-    ),
-    [1],  [Develop penetration and ricochet mechanics.], [penetration],
-    [2],  [Develop penetration and ricochet mechanics.], [penetration],
-    [3],  [Develop penetration and ricochet mechanics.], [article],
-    [4],  [Study external engines.], [article],
-    [5],  [Set up comparison scenes in external engines.], [article],
-    [6],  [Set up testing by other people.], [external engine, tests],
-    [7],  [Collect results.], [sick],
-    [8],  [Write remaining document.], [sick],
-    [9],  [Write remaining document.], [],
-    [10], [Polish codebase and complete document.], [],
-    [11], [Prepare final submission.], [],
-    [12], [Prepare defense materials.], []
-  )]
+  text(size: 9pt)[
+    #table(
+      columns: (0.7fr, 1.7fr, 3fr),
+      align: (center, left, left),
+      table.header(
+        [*Week*], [*Plan*], [*Result*],
+      ),
+      [1. − 2.],   [Implement terminal ballistics], [Reviewed literature, implemented impact interaction],
+      [3. − 4.],   [Set up engine integration],     [Worked on conference paper, refactored architecture],
+      [5. − 6.],   [Set up user testing],           [Integrated into engine, conducted user testing],
+      [7. − 8.],   [Write document],                [],
+      [9. − 10.],  [Finalize project],              [],
+      [11. − 12.], [Prepare final submission],      [],
+    )
+  ]
 )
 
 = Technical documentation

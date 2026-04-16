@@ -124,18 +124,19 @@
   use-binding: false,
 ) = {
   heading(title, numbering: none, outlined: false)
-  grid(
-    columns: (auto, 1fr),
-    column-gutter: 5em,
-    row-gutter: 1.4em,
-    ..abbreviations
-      .map(
-        it => (
-          strong(it.at(0)),
-          it.at(1),
-        ),
-      )
-      .flatten()
+  text(12pt,  // размер
+    grid(
+      columns: (auto, 1fr),
+      column-gutter: 5em,
+      row-gutter: 1.4em,
+      ..abbreviations
+        .map(
+          it => (
+            strong(it.at(0)),
+            it.at(1),
+          ),
+        )
+        .flatten()
+    )
   )
 }
-
