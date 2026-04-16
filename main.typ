@@ -268,7 +268,7 @@ text(size: 10pt)[
   caption: [Test coverage summary.]
 ) <tab:tests>
 
-The force models are direct transcriptions of established physical formulas and are not unit-tested separately. Runtime behavior and visual consistency were instead verified throughout development using simulation samples built within `BulletEngine`. Each sample organized in a separate `samples/` subdirectory. This is a self-contained `main()` configuration that exercises a specific aspect of the framework and can be compiled and run without additional setup beyond cloning the repository and building with CMake. @tab:samples lists the available samples.
+The force models are direct transcriptions of established physical formulas and are not unit-tested separately. Runtime behavior and visual consistency were instead verified throughout development using simulation samples built within `BulletEngine`. This is a self-contained `main()` configuration that exercises a specific aspect of the framework and can be compiled and run without additional setup beyond cloning the repository and building with CMake. @tab:samples lists the available samples.
 
 #figure(
 text(size: 10pt)[
@@ -298,8 +298,16 @@ The Godot Engine integration is maintained in a separate repository (`BulletPhys
 
 The drag curve lookup tables (G1–G8, GL) used by the library are embedded in the source code as static arrays derived from published reference data @jbm-data. The other presets are likewise defined in the source. No external data files, databases, or runtime downloads are required.
 
-
 == Sustainability and environmental impact
+
+The most common cause of long-term software decay is dependency rot: external libraries change their APIs, build systems evolve, and package repositories eventually retire older versions. The proposed framework depends only on the #box[C++] standard library, which is governed by an ISO standard and remains stable across compiler generations. No third-party runtime dependencies, package managers, or platform-specific APIs are required. Google Test is used exclusively for the test suite and is not required for building or using the library itself. The implementation targets #box[C++17], a mature and widely supported revision of the language standard available across all major compiler toolchains. No compiler-specific extensions or other non-standard language features are used. As a result, the library can be built on any conforming system using CMake, while the risk of dependency breakage over time is substantially reduced.
+
+Long-term maintainability is further supported by the modular architecture. Each physical effect is encapsulated as an independent component behind a stable interfaces: `IForce`, `IEnvironment`, and `IIntegrator`, which allows new effects to be added and existing implementations to be replaced without modifying the rest of the codebase. 
+
+The repository itself contains a `README.md` file with build and download instructions, and a `DOCUMENTATION.md` file providing an API overview and usage examples. The project is organized into a clear and conventional directory structure. The codebase is further structured through a consistent namespace hierarchy that reflects the conceptual decomposition of the framework and prevents collisions as the project grows. These measures improve readability and lower the cost of future maintenance. The project is hosted publicly on GitHub under the MIT license, allowing unrestricted forking, modification, and redistribution. This reduces dependence on a single maintainer and increases the likelihood that the framework will remain accessible and reusable in the long term. 
+
+From an environmental perspective, the project does not involve machine learning, large-scale data processing, or permanently running cloud services. The library is a lightweight C++ static library with negligible build-time requirements. The CI pipeline runs on GitHub-hosted runners only on push events, avoiding continuous resource consumption. The simulation itself is designed to be computationally efficient, as the conducted evaluation confirmed minimal CPU and memory overhead even under heavy projectile loads.
+
 
 == Employability
 
@@ -308,8 +316,6 @@ The drag curve lookup tables (G1–G8, GL) used by the library are embedded in t
 
 
 = Conclusion
-
-
 
 
 
