@@ -1,6 +1,6 @@
 #import "template/lib.typ": *
 
-#show raw.where(block: true): set text(size: 9pt)
+#show raw.where(block: true): set text(size: 8pt)
 #show raw.where(block: false): set text(size: 10pt)
 
 #import "@preview/zebraw:0.6.1": *
@@ -366,6 +366,246 @@ From a diversity and inclusion perspective, the project explicitly avoids assump
 
 = Description of digital submission
 
+
+= Technical documentation
+
+#set par(first-line-indent: 0em)
+
+== Setup
+
+The library requires a #box[C++17] compatible compiler and CMake. Google Test is required for building and running the test suite but is not needed for the library itself. No other external dependencies are required. 
+
+On a Debian-based Linux system, all required tools can be installed with:
+
+```bash
+sudo apt install build-essential cmake libgtest-dev
+```
+
+== Installation
+
+Prebuilt static library and headers are available on the GitHub #link("https://github.com/admtrv/BulletPhysics/releases")[#underline[releases]] page.
+
+Alternatively, the library can be compiled from source. The project uses CMake and `CMakeLists.txt` is available. A standard build and test sequence is:
+
+```bash
+cmake -B build
+cmake --build build
+ctest --test-dir build
+```
+
+== Developer Manual
+
+=== Body
+
+The library operates on the `IPhysicsBody` interface. Integrate it with your own rigid body system, or use the builtin `RigidBody` / `ProjectileRigidBody`.
+
+For basic simulation:
+
+```cpp
+#include "PhysicsBody.h"
+#include "builtin/bodies/RigidBody.h"
+
+RigidBody body;
+body.setMass(1.0);
+body.setPosition({0.0, 1.5, 0.0});
+body.setVelocity({20.0, 10.0, 0.0});
+```
+
+For projectile simulation with ballistic properties, use the `ProjectileSpecs` builder and `ProjectileRigidBody`:
+
+```cpp
+#include "PhysicsBody.h"
+#include "builtin/bodies/RigidBody.h"
+
+// mass kg, diameter m
+auto specs = ProjectileSpecs::create(0.01, 0.00762)
+    .withDragModel(DragCurveModel::G7)
+// muzzle velocity, rifling direction, twist rate
+    .withMuzzle(838.0, Direction::RIGHT, 12.0);
+
+ProjectileRigidBody body(specs);
+```
+
+Or use a preset:
+
+```cpp
+auto specs = presets::Sphere();     // idealized sphere
+auto specs = presets::Nato762();    // 7.62 NATO bullet
+
+ProjectileRigidBody body(specs);
+```
+
+=== Integrator
+
+Choose a numerical integration method:
+
+```cpp
+#include "math/Integrator.h"
+
+EulerIntegrator euler;          // fastest, least accurate
+MidpointIntegrator midpoint;    // good balance
+RK4Integrator rk4;              // slowest, most accurate
+```
+
+=== Physics World
+
+`PhysicsWorld` manages forces and environments. Environments update the shared `PhysicsContext`, then Forces read it.
+
+```cpp
+#include "ballistics/external/PhysicsWorld.h"
+
+PhysicsWorld world;
+
+// environments
+
+// sea-level temp K, sea-level pressure Pa
+world.addEnvironment(std::make_unique<Atmosphere>(280.0, 100000.0));
+// relative humidity correction %
+world.addEnvironment(std::make_unique<Humidity>(60));
+// wind velocity m/s
+world.addEnvironment(std::make_unique<Wind>(Vec3{0.0, 0.0, 2.0}));
+// latitude/longitude in radians
+world.addEnvironment(std::make_unique<Geographic>(deg2rad(48.15), deg2rad(17.11)));
+
+// forces
+world.addForce(std::make_unique<Gravity>());
+world.addForce(std::make_unique<Drag>());
+world.addForce(std::make_unique<Coriolis>());
+world.addForce(std::make_unique<Lift>());
+world.addForce(std::make_unique<Magnus>());
+```
+
+=== Simulation Loop
+
+```cpp
+double dt = 0.001;
+double t = 0.0;
+
+while (true)
+{
+    integrator.step(body, &world, dt);
+    t += dt;
+
+    auto pos = body.getPosition();
+    // use position...
+}
+```
+
+=== Coordinate Mapping
+
+The library uses the ENU (East-North-Up) coordinate system internally: x=East, y=North, z=Up. If your engine uses a different convention, set a coordinate mapping once at startup. The integrator converts body state at step boundaries automatically.
+
+```cpp
+#include "geography/CoordinateMapping.h"
+
+// presets
+CoordinateMapping::set(mappings::ENU());       // identity (default)
+CoordinateMapping::set(mappings::OpenGL());    // x=East, y=Up, z=-North
+CoordinateMapping::set(mappings::Godot());     // x=East, y=Up, z=-North
+CoordinateMapping::set(mappings::Unreal());    // x=North, y=East, z=Up
+CoordinateMapping::set(mappings::Unity());     // x=East, y=Up, z=North
+CoordinateMapping::set(mappings::Vulkan());    // x=East, y=-Up, z=-North
+```
+
+For a custom system, specify which user axis corresponds to East, North, and Up:
+
+```cpp
+// your system: x=Up, y=North, z=-East
+CoordinateMapping custom(Axis::NEG_Z, Axis::POS_Y, Axis::POS_X);
+CoordinateMapping::set(custom);
+```
+
+With a mapping set, pass positions and velocities in your engine's coordinate system. The library handles internal conversion and returns results in the same user space.
+
+=== Detail Levels
+
+Configure based on required realism level:
+
+*Minimum (Gravity only):*
+```cpp
+PhysicsWorld world;
+world.addForce(std::make_unique<Gravity>());
+```
+
+*+ Aerodynamic drag:*
+```cpp
+// for standard isa atmosphere
+world.addEnvironment(std::make_unique<Atmosphere>());
+world.addForce(std::make_unique<Drag>());
+
+// mass, diameter (area auto-calculated)
+auto specs = ProjectileSpecs::create(0.01, 0.00762)
+    .withDragModel(DragCurveModel::G7);
+```
+
+*+ Sea-level condition correction:*
+```cpp
+world.addEnvironment(std::make_unique<Atmosphere>(280.0, 100000.0));
+```
+
+*+ Humidity correction:*
+```cpp
+world.addEnvironment(std::make_unique<Humidity>(60));
+```
+
+*+ Wind vector:*
+```cpp
+world.addEnvironment(std::make_unique<Wind>(Vec3{0.0, 0.0, 2.0}));
+```
+
+*+ Coriolis effect:*
+```cpp
+// for geographic coordinates and position-dependent gravity
+world.addEnvironment(std::make_unique<Geographic>(lat, lon));
+world.addForce(std::make_unique<Coriolis>());
+```
+
+*+ Spin drift (Lift + Magnus):*
+```cpp
+world.addForce(std::make_unique<Lift>());
+world.addForce(std::make_unique<Magnus>());
+// or all at once via SpinDrift::addTo(world);
+
+// muzzle velocity, rifling direction, twist rate
+specs.withMuzzle(838.0, Direction::RIGHT, 12.0);
+```
+
+=== Terminal Ballistics
+
+Resolve projectile impact against a collider with material:
+
+```cpp
+#include "ballistics/terminal/Impact.h"
+#include "ballistics/terminal/Material.h"
+
+void CollisionSystem::onCollision()
+{
+    ...
+    
+    ImpactInfo info;
+    info.normal = manifold.info.normal;
+    // Wood(), Steel(), ...
+    info.material = collider.getMaterial(); 
+    // effective thickness
+    info.thickness = collider.computeThickness(body.getPosition(), body.getVelocity());
+
+    auto result = Impact::resolve(projectileBody, info);
+
+    switch (result.outcome)
+    {
+        case ImpactOutcome::Ricochet:
+            // your logic...
+        case ImpactOutcome::Penetration:
+            // your logic...
+        case ImpactOutcome::Embed:
+            // your logic...
+    }
+    
+    ...
+```
+
+#set par(first-line-indent: 1em)
+
 =  Work schedule <plan-of-work>
 
 == Winter semester
@@ -388,7 +628,7 @@ From a diversity and inclusion perspective, the project explicitly avoids assump
   ]
 )
 
-*Self-Evaluation.* The work plan for the winter semester is considered satisfied and exceeded. The depth of the physical research led to a substantially more thorough treatment than originally anticipated, resulting in a comprehensive discussion of the physical foundations of external ballistics in the final report.
+*Self-Evaluation.* The work plan for the winter semester is considered satisfied and exceeded. The depth of the physical research led to a substantially more thorough treatment than originally anticipated, resulting in a comprehensive discussion of the physical foundations of external ballistics in the midterm report.
 
 
 == Summer semester
@@ -410,14 +650,6 @@ From a diversity and inclusion perspective, the project explicitly avoids assump
     )
   ]
 )
-
-= Technical documentation
-
-== Setup
-
-== Installation Manual
-
-== Developer Manual
 
 = Scientific part
 
