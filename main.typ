@@ -195,7 +195,23 @@ The library is built as a static library using CMake with no external dependenci
 
 The framework is evaluated along four directions. First, _integration effort_ is measured by deploying the library into a custom OpenGL engine and Godot Engine without modifying the library's and engine's source code. Second, _numerical accuracy_ is assessed by comparing simulated trajectories against the established ballistic calculator @jbm. Third, _runtime performance_ is profiled to confirm that the simulation loop is allocation-free and sustains real-time throughput with over a thousand simultaneous projectiles. Fourth, _terminal ballistics outcomes_ are validated through controlled impact experiments covering ricochet, penetration, multi-layer traversal, and embedding.
 
+
 == Risk assessment
+
+
+The strengths of the framework include a solid theoretical foundation grounded in established physical references. The modular architecture allows selective enablement of individual effects, making the library applicable across a wide range of game genres. The C/C++ implementation with no external dependencies ensures broad compatibility with major game projects. The library includes built-in rigid body and collision systems, so it can be used both as a supplement to an existing physics system and as a standalone solution. Cross-platform CI with automated testing reduces the risk of platform-specific regressions.
+
+The weaknesses include the limitation of the external ballistics model to the Modified Point Mass formulation. The atmospheric model covers only the troposphere, which prevents simulation of transcontinental or high-altitude trajectories. Due to the inherently empirical nature of terminal ballistics and the absence of a universal analytical model, the terminal module is the weakest part of the framework. It covers the basic use cases, but there is clear room for improvement through deeper study of material science models.
+
+The following risks were identified along with their mitigation strategies:
+
++ _Integration complexity._ The number of possible host environments is large, and the integration path into each of them remains largely unexplored. Mitigation: the evaluation demonstrates successful integration into two fundamentally different environments, which confirms that the interface design is sound. Further integrations, at minimum into Unreal Engine and Unity, are a natural next step.
+
++ _Built-in preset quality._ The built-in presets for materials, projectiles, and coefficients are values sourced by the author from available literature and may not be sufficiently accurate for all scenarios. Mitigation: all presets are replaceable and extensible components. If the user possesses more precise firing data or tabular references, they can substitute their own values without modifying the library.
+
++ _Cross-platform compatibility._ Differences in compilers, standard library implementations, and build toolchains across Linux, Windows, and macOS can introduce subtle issues. Mitigation: the CI pipeline builds and tests on all three platforms with every commit, catching compatibility problems before release.
+
++ _Single-threaded execution._ The simulation runs in a single thread, which may not fully utilize multi-core systems under heavy projectile loads. Mitigation: parallelization is the responsibility of the user's integration layer, but the architecture provides good prerequisites for it: the simulation loop is allocation-free, and there is no shared mutable state between individual projectiles.
 
 == Experimental reproducibility and integration
 
