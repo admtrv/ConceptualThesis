@@ -103,8 +103,48 @@ The problem addressed in this thesis is therefore formulated as follows:
 
 *Conduct evaluation.* Validate the resulting framework against the stated design objectives through a series of controlled experiments, in order to demonstrate the applicability of the proposed solution.
 
-
 == Technical literature review 
+
+Several commercial titles demonstrate the gameplay value of physically-based ballistics. In the Sniper Elite series, the bullet is affected by gravity and deflected by wind, requiring the player to compensate for both effects when aiming at distant targets @sniper-elite-v2-2012. The internal implementation is not publicly documented, and players note that the effects appear exaggerated, likely due to the compressed in-game distances. World of Tanks places greater emphasis on terminal ballistics, with the ricochet and multi-layer armor penetration system serving as the foundational gameplay mechanic @wot-armor-penetration. Arma 3 with the ACE3 Advanced Ballistics module @ace3-advanced-ballistics represents a near-ideal reference: it simulates ballistic coefficients, atmosphere influence with wind, Earth rotation effects, and spin drift caused by projectile rotation. However, all these implementations are internal to their respective commercial implementation and unavailable for reuse.
+
+Game engines represent comprehensive core systems that implement fundamental functionality including rendering pipelines, physics simulation, input processing, and asset management systems. These frameworks provide developers with the necessary tools to immediately start developing games. Along with the systems that were already implemented "out of box", their official marketplaces distribute community-created add-ons that extend engine functionality, and ballistic simulation is one such area where marketplace solutions exist. 
+
+A comparative analysis of the most popular marketplace assets based on user ratings and download statistics for *Unity* @true-ballistics-unity @realistic-sniper-unity @bullet-ballistics-unity and *Unreal Engine* @weapon-ballistics-unreal @easy-ballistics-unreal @terminal-ballistics-unreal reveals significant variation in feature completeness. @table-marketplace summarizes the supported physical phenomena across both ecosystems. Only a few assets approach a complete feature set and serve as useful references, but still remain tightly bound to their host engine and cannot be reused outside of it. 
+
+#set table(stroke: (x, y) => (
+  left: if x > 0 { 0.8pt },
+  top: if y > 0 { 0.8pt },
+))
+
+#figure(
+text(size: 10pt)[
+  #table(
+    columns: 7,
+    align: (left, center, center, center, center, center, center),
+    table.header(
+      [], table.cell(colspan: 3)[*Unity Asset Store*], table.cell(colspan: 3)[*Unreal Engine Fab*],
+    ),
+    table.hline(),
+    [*Feature*],
+    [True \ Ballistics], [Realistic \ Sniper], [Bullet \ Ballistics 2],
+    [Weapon \ Ballistics Pro], [Easy \ Ballistics], [Terminal \ Ballistics],
+    table.hline(),
+    [Gravity], [+], [+], [+], [-], [+], [+],
+    [Air resistance], [+], [+], [+], [-], [+], [+],
+    [Atmosphere influence], [+], [+], [+], [-], [+], [+],
+    [Drag curves], [+], [-], [-], [-], [+], [-],
+    [Coriolis effect], [+], [-], [-], [-], [-], [-],
+    [Gyroscopic influence], [+], [+], [-], [-], [-], [-],
+    [Terminal impact], [+], [+], [+], [+], [+], [+],
+  )],
+  caption: [Comparison of ballistic features across Unity and Unreal Engine marketplace assets.]
+) <table-marketplace>
+
+The *Godot Asset Library* lacks comprehensive ballistic solutions entirely. The available assets provide simplified, non-physical shooting mechanics suited for arcade and casual genres. This absence further emphasizes the need for proposed solution.
+
+*Standalone libraries* outside of engine ecosystems are primarily ballistic calculators designed for real-world marksmanship @gnu-ballistics that compute complete trajectories in a single pass, which is incompatible with frame-by-frame integration required by interactive applications. No discovered solution combines physical fidelity with a modular, engine-independent architecture.
+
+The gap in sources about ballistics as a software artifact motivated a study of both the physical and the software engineering literature separately, in order to combine them into a unified solution. The primary physical reference is McCoy's _Modern Exterior Ballistics_ @mccoy-modern, the most comprehensive treatment of projectile flight dynamics available. This work has become foundational in the field and is widely cited across a large number of ballistic research. The remaining physical models are drawn from domain-specific sources: the International Standard Atmosphere from a NASA technical report by Talay @talay-nasa, the WGS-84 geodetic model by The United States Defense Mapping Agency @wgs-84, and other relevant works referenced throughout the thesis. On the software engineering side, Gregory's _Game Engine Architecture_ @gregory-game-engine is one of the principal references for the design of game engine subsystems, and it directly informed the architectural decisions in this work.
 
 == Solution overview 
 
