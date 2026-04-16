@@ -183,7 +183,7 @@ A limitation of fixed-step integration is that accuracy depends on the timestep 
 
 The rigid body is one of the most fundamental components of every physics engine @gregory-game-engine. The framework defines a minimal abstract interface `IPhysicsBody` to avoid duplicating the engine logic. It specifies only what the simulation pipeline requires: mass, position, velocity, and force accumulation. A concrete engine integration then requires only a thin adapter bridging the host engine's rigid body to this interface.
 
-The collision subsystem follows a similar approach. Unlike the rigid body, which participates in every simulation step, collision geometry is relevant only at the moment of impact. The framework externalizes impact-related information into a POD structure `ImpactInfo` that the host engine populates upon detecting a collision and passes to the stateless resolver, which returns a classified outcome and post-impact state. This avoids excessive wrapping host engine's collision system.
+The collision subsystem follows a similar approach. Unlike the rigid body, which participates in every simulation step, collision geometry is relevant only at the moment of impact @gregory-game-engine. The framework externalizes impact-related information into a POD structure `ImpactInfo` that the host engine populates upon detecting a collision and passes to the stateless resolver, which returns a classified outcome and post-impact state. This avoids excessive wrapping host engine's collision system.
 
 The library operates internally in the East-North-Up coordinate system, required for correct physical computations. A coordinate mapping, defined once at startup, allows the user to work entirely in their engine's native convention while the framework handles all conversions transparently.
 
@@ -308,12 +308,21 @@ The repository itself contains a `README.md` file with build and download instru
 
 From an environmental perspective, the project does not involve machine learning, large-scale data processing, or permanently running cloud services. The library is a lightweight C++ static library with negligible build-time requirements. The CI pipeline runs on GitHub-hosted runners only on push events, avoiding continuous resource consumption. The simulation itself is designed to be computationally efficient, as the conducted evaluation confirmed minimal CPU and memory overhead even under heavy projectile loads.
 
-
 == Employability
+
+The project was motivated by a personal interest in game engine programming. The physics subsystem was chosen as the subject of the thesis, while the rendering subsystem was developed alongside it out of necessity. Although the renderer is not part of the deliverable, building both subsystems provided a broader understanding of how engine components interact.
+
+On the physics side, the work progressed from foundational mechanics into specialized ballistic literature: reference books and research papers, that required independent reading, interpretation, and synthesis into a coherent model. This ability to research a technical domain and translate scientific sources into working software is applicable both in game studios and in engineering companies.
+
+On the software side, the project resulted in a complete, publicly released #box[C++] product applicable across projects of different scale and requirements. #box[C++] remains the foundational language of the game industry, and writing a game engine from scratch is a valuable exercise for understanding how commercial engines are structured internally. The intention is to continue developing game engine beyond the thesis, progressively implementing the remaining core subsystems to arrive at a fully functional game engine.
+
 
 == Teamwork, diversity and inclusion
 
 
+The thesis was developed as an individual project. Supervision was primarily oriented towards the physics domain, which meant that detailed feedback was received on the physical modeling side, while the software architecture had to be explained by the author in the context of the physical requirements it serves, demonstrating the current state of implementation, justifying design decisions, and tracking milestones. The work also benefited from informal knowledge sharing within the facilities of both FEI and FIIT STU, including a shared Google Classroom group. Task management followed an iterative approach, where the implementation was progressively extended from a minimal functional core towards a more complete system, and the direction of further development was continuously discussed during supervision meetings.
+
+From a diversity and inclusion perspective, the project explicitly avoids assumptions about the background of its users. The framework is designed to be accessible to developers with varying levels of expertise: it can be used immediately with built-in presets and default configurations for those who need a quick plug-and-use solution, while also exposing the full set of parameters and extensible interfaces for those who want to configure the simulation in detail. This design approach increases the practical usability of the framework and lowers the barrier to entry for its adoption.
 
 = Conclusion
 
@@ -337,11 +346,6 @@ From an environmental perspective, the project does not involve machine learning
 =  Work schedule <plan-of-work>
 
 == Winter semester
-
-#set table(stroke: (x, y) => (
-  left: if x > 0 { 0.8pt },
-  top: if y > 0 { 0.8pt },
-))
 
 #figure(
 text(size: 9pt)[
