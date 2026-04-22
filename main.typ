@@ -344,7 +344,7 @@ On the software side, the project resulted in a complete, publicly released #box
 
 The thesis was developed as an individual project. Supervision was primarily oriented towards the physics domain, so detailed guidance was provided on physical modeling, while the software architecture and design decisions had to be explained by the author. The work also benefited from informal knowledge sharing within the facilities of both FEI and FIIT STU, including a shared Google Classroom group. Task management followed the iterative approach, where the implementation was progressively extended from a minimal functional core towards a more complete system. Time management was followed as described in @plan-of-work. User testing was conducted with a small group of participants, and based on their feedback minor adjustments were made. The full testing protocol is documented in @testing-protocol.
 
-From a diversity and inclusion perspective, the framework is designed to be accessible to developers with varying levels of expertise: it can be used immediately with built-in presets for those who need a quick plug-and-use solution, while also exposing the full set of parameters and extensible interfaces for those who want to configure the simulation in detail. This design approach increases the practical usability of the framework and lowers the barrier to entry for its adoption. 
+From a diversity and inclusion perspective, the framework is designed to be accessible to developers with varying levels of expertise: it can be used immediately with built-in presets for those who need a quick plug-and-use solution, while also exposing the full set of parameters and extensible interfaces for those who want to configure the simulation in detail. This design approach increases the practical usability of the framework and lowers the barrier to entry for its adoption.
 
 = Conclusion
 
@@ -424,7 +424,7 @@ From a diversity and inclusion perspective, the framework is designed to be acce
    basic-terminal/
    comparison-configs/
    comparison-costs/
-   comparison-integrators/    
+   comparison-integrators/
    test-allocations/
    test-convergence/
    benchmark-performance/
@@ -693,7 +693,7 @@ m = materials::Wood();
 m = materials::Soil();
 ```
 
-The terminal system is resolver-style. Fill an `ImpactInfo` structure, pass it into `Impact::resolve`: 
+The terminal system is resolver-style. Fill an `ImpactInfo` structure, pass it into `Impact::resolve`:
 
 ```cpp
 struct ImpactInfo {
@@ -725,11 +725,11 @@ The returned data is then consumed by the caller to drive the corresponding resp
 void CollisionSystem::onCollision()
 {
     ...
-    
+
     ImpactInfo info;
     info.normal = manifold.info.normal;
     // Wood(), Steel(), ...
-    info.material = collider.getMaterial(); 
+    info.material = collider.getMaterial();
     // effective thickness
     info.thickness = collider.computeThickness(body.getPosition(), body.getVelocity());
 
@@ -744,11 +744,9 @@ void CollisionSystem::onCollision()
         case ImpactOutcome::Embed:
             // your logic...
     }
-    
+
     ...
 ```
-
-#set par(first-line-indent: 1em)
 
 =  Work schedule <plan-of-work>
 
@@ -798,6 +796,283 @@ void CollisionSystem::onCollision()
 *Self-Evaluation.*
 
 = Usability testing protocol <testing-protocol>
+
+== Task specification
+
+*Deadline:* April 26, 2026
+
+*Expected duration:* up to one hour
+
+=== Subject of evaluation
+
+A #box[C++] library that provides a ready-to-use toolkit for implementing ballistic simulations. It is being evaluated against the criteria of ease of integration, API clarity, and practical applicability.
+
+_In plain terms:_ a library that takes care of all the physics for projectile flight simulation: trajectories, gravity, and collisions. Instead of writing all of that manually, you integrate the library and use the provided tools. The goal is to determine how convenient the library is and whether it saves time, effort, and code volume compared to implementing everything from scratch.
+
+=== Main goal
+
+Choose any scenario, mini-project, or task of interest and implement it in two ways:
++ A full implementation of the flight physics from scratch.
++ An implementation of the same task using the library.
+
+For students of _FYZAKPH_B (Physical basics of computer games)_: you may use the graphical ballistic simulations that were covered in your lab sessions.
+
+After that, compare both approaches and draw a conclusion on which one is more practical from a development perspective.
+
+In addition to the main task, you are welcome to experiment with the library further if you wish. The level of complexity is up to you: from simple gravity to atmospheric effects, wind, Earth’s rotation, projectile spin, or even ricochet and penetration. Using OpenGL for graphical simulations is optional. Creativity is encouraged.
+
+It is preferable to upload the finished project to GitHub for easier review and as proof of completion. The suggested structure for one completed task is:
+
+#dtree(```
+task/
+  from-scratch/
+  with-library/
+
+```)
+
+=== Resources
+
+- *Library:* \
+  #h(1em) #link("https://github.com/admtrv/BulletPhysics")
+- *Documentation:* \
+  #h(1em) #link("https://github.com/admtrv/BulletPhysics/blob/main/DOCUMENTATION.md")
+- *Usage examples:* \
+  #h(1em) #link("https://github.com/admtrv/BulletEngine/tree/main/samples")
+
+#pagebreak()
+
+== Post-testing questionnaire
+
+#let radio = box(circle(radius: 4pt, stroke: 0.6pt))
+#let check = box(rect(width: 9pt, height: 9pt, stroke: 0.6pt))
+#let blank = rect(width: 100%, height: 2.5cm, stroke: 0.5pt)
+#let question(body) = block(breakable: false, below: 2.5em, body)
+
+=== Part 1: Integration and setup
+
+#question[
+  *1. How easy was it to integrate the library into your project?*
+
+    #h(1em) #check a) Very easy, managed without documentation \
+    #h(1em) #check b) Managed with the documentation \
+    #h(1em) #check c) Encountered difficulties, had to investigate further \
+    #h(1em) #check d) Could not integrate the library on my own
+]
+
+#question[
+  *2. How long did the initial setup take, up to the first working result?*
+  
+    #h(1em) #check a) Less than 15 minutes \
+    #h(1em) #check b) 15–30 minutes \
+    #h(1em) #check c) 30–60 minutes \
+    #h(1em) #check d) More than one hour
+]
+
+#question[
+  *3. Was the documentation sufficient to get started?*
+
+    #h(1em) #check a) Yes, everything was clear on first reading \
+    #h(1em) #check b) Mostly yes, but some details had to be guessed \
+    #h(1em) #check c) Documentation was insufficient, often referred to examples \
+    #h(1em) #check d) Documentation did not help
+]
+
+=== Part 2: API and development experience
+
+#question[
+  *4. How intuitive is the library's API?*
+
+    #h(1em) #check a) Very intuitive — names and behavior match expectations \
+    #h(1em) #check b) Mostly intuitive, but some aspects are non-obvious \
+    #h(1em) #check c) Often had to guess how a particular function works \
+    #h(1em) #check d) API is unclear without studying the source code
+]
+
+#question[
+  *5. Were there any moments in the API that surprised or confused you?* \
+  _Free-form answer_
+
+  #blank
+]
+
+#question[
+  *6. What did you feel was missing in the library?* \
+  _Free-form answer_
+
+  #blank
+]
+
+=== Part 3: Comparing the two approaches
+
+#question[
+  *7. Did the library-based implementation take less time than the from-scratch version?*
+
+    #h(1em) #check a) Significantly less \
+    #h(1em) #check b) Slightly less \
+    #h(1em) #check c) About the same \
+    #h(1em) #check d) More — figuring out the library took longer than writing it myself
+]
+
+#question[
+  *8. Was the library-based code more compact?*
+
+    #h(1em) #check a) Yes, noticeably less code \
+    #h(1em) #check b) Slightly less \
+    #h(1em) #check c) About the same \
+    #h(1em) #check d) No, there was even more code
+]
+
+#question[
+  *9. Which approach produced more readable and understandable code?*
+
+    #h(1em) #check a) With the library \
+    #h(1em) #check b) From scratch \
+    #h(1em) #check c) About the same
+]
+
+#question[
+  *10. If you had to implement a similar task in a real project, what would you choose?*
+
+    #h(1em) #check a) The library — faster and more convenient \
+    #h(1em) #check b) Write it from scratch — more control \
+    #h(1em) #check c) Depends on the task
+]
+
+=== Part 4: Overall evaluation
+
+#question[
+  *11. Rate the library on each criterion from 1 to 5:*
+
+  #figure(
+    text(size: 10pt)[
+      #table(
+        columns: (2fr, 1fr, 1fr, 1fr, 1fr, 1fr),
+        align: (left, center, center, center, center, center),
+        table.header([*Criterion*], [*1*], [*2*], [*3*], [*4*], [*5*]),
+        [Integration simplicity],  [], [], [], [], [],
+        [API clarity],             [], [], [], [], [],
+        [Documentation quality],   [], [], [], [], [],
+        [Practical applicability], [], [], [], [], [],
+        [Overall impression],      [], [], [], [], [],
+      )
+    ]
+  )
+]
+
+#question[
+  *12. Main strength of the library:* \
+  _Free-form answer_
+
+  #blank
+]
+
+#question[
+  *13. Main weakness of the library:* \
+  _Free-form answer_
+
+  #blank
+]
+
+#question[
+  *14. Any additional comments, wishes, or remarks:* \
+  _Free-form answer_
+
+  #blank
+]
+
+#v(2em)
+
+_Thank you for participating in the testing!_
+
+#pagebreak()
+
+== Test Users
+
+#figure(
+  text(size: 10pt)[
+    #table(
+      columns: (auto, 1fr, 1fr, 1fr),
+      align: (center, center, center, center),
+      table.header(
+        //             Alexej   Alyona   Andreii
+        [*Test User*], [*TU1*], [*TU2*], [*TU3*],
+      ),
+      [*Age*],                              [22], [22], [18],
+      [*Gender*],                           [Male], [Female], [Male],
+      [*Education*],                        [Bachelor's], [Bachelor's], [Secondary school],
+      [*Physics \ experience*],             [Basic], [Basic], [Basic],
+      [*C/C++ \ Programming \ experience*], [Intermediate], [Basic], [Advanced],
+      [*Game \ development \ experience*],  [Intermediate], [None], [Intermediate], // None / Basic / Intermediate / Advanced
+    )
+  ],
+  caption: [Overview of the test users.]
+)
+
+#pagebreak()
+
+== Results
+
+=== Completed tasks
+
+#figure(
+  text(size: 9pt)[
+    #table(
+      columns: (auto, 1fr, 1fr, 1fr),
+      align: (left, center, center, center),
+      table.header(
+        [*Test User*], [*TU1*], [*TU2*], [*TU3*],
+      ),
+      [*Completed tasks*],        [2D and 3D \ OpenGL simulations], [Simulation \ without graphics], [2D OpenGL simulation],
+      [*Code review observation*], [Wrote manual \ coordinate translation at \ the integration boundary], [Did not use \ constant drag coefficient, \ although available], [No unexpected behavior],
+    )
+  ],
+  caption: [Completed tasks and code review observations per test user.]
+)
+
+
+=== Questionnaire responses
+
+#figure(
+  text(size: 9pt)[
+    #table(
+      columns: (auto, 3fr, 2fr, 2fr, 2fr),
+      align: (center, left, center, center, center),
+      table.header(
+        [*№*], [*Question*], [*TU1*], [*TU2*], [*TU3*],
+      ),
+      table.cell(colspan: 5, align: left)[_Part 1: Integration and setup_],
+      [1], [Ease of integration],      [b], [a], [a],
+      [2], [Initial setup time],       [b], [a], [a],
+      [3], [Documentation sufficiency],[b], [a], [a],
+      table.cell(colspan: 5, align: left)[_Part 2: API and development experience_],
+      [4], [API intuitiveness],        [b], [a], [a],
+      [5], [Surprising or confusing moments], [No], [No], [No],
+      [6], [What was missing],         [Integration scenario \ for existing projects], [Nothing, meets \ all requirements], [Nothing],
+      table.cell(colspan: 5, align: left)[_Part 3: Comparing the two approaches_],
+      [7], [Time spent vs. from-scratch], [b], [a], [a],
+      [8], [Code compactness],            [b], [b], [c],
+      [9], [Code readability],            [a], [a], [a],
+      [10],[Choice for a real project],   [a], [a], [a],
+      table.cell(colspan: 5, align: left)[_Part 4: Overall evaluation_],
+      [11a],[Integration simplicity], [4], [5], [5],
+      [11b],[API clarity],            [4], [5], [5],
+      [11c],[Documentation quality],  [5], [5], [5],
+      [11d],[Practical applicability],[4], [5], [5],
+      [11e],[Overall impression],     [5], [5], [5],
+      [12], [Main strength], [Modular, \ engine-independent, \ ready-to-use], [Convenient \ preset \ system], [Simple integration, \ C++20, \ good docs],
+      [13], [Main weakness], [Higher entry barrier \ for existing projects], [—], [—],
+      [14], [Additional comments], [Better onboarding, \ integration examples \ for existing projects], [—], [—],
+    )
+  ],
+  caption: [Questionnaire responses per test user.]
+) <tab:results>
+
+=== List of problems found
+
++ *Manual coordinate conversion.* TU1 wrote custom conversion functions to translate between the project's internal coordinate representation and the convention expected by the library. _Resolution:_ a `CoordinateMapping` was introduced, defined once at startup, so that the user works entirely in their project's native convention while the framework handles all conversions transparently.
+
++ *Undiscoverable constant drag coefficient.* TU2 did not realize that a constant drag coefficient model was available, although it was already implemented. _Resolution:_ this was a documentation gap. The `DOCUMENTATION.md` file was updated to mention the constant drag coefficient model alongside the drag curve models.
+
 
 = Scientific part
 
