@@ -80,11 +80,13 @@
 #set text(size: 12pt)
 
 #set table(stroke: (x, y) => (
-  left: if x > 0 { 0.8pt },
-  top: if y > 0 { 0.8pt },
+  left: if x > 0 { 0.5pt },
+  top: if y > 0 { 0.5pt },
 ))
 
 #show figure.where(kind: table): set figure.caption(position: top)
+
+#show raw.where(block: true): set block(breakable: false)
 
 = Technical abstract
 
@@ -486,9 +488,9 @@ cmake --build build
 ctest --test-dir build
 ```
 
-== Developer Manual
+== Developer manual
 
-=== Body
+=== Rigid body
 
 The library operates on the `IPhysicsBody` interface. Integrate it with your own rigid body system, or use the builtin `RigidBody` / `ProjectileRigidBody`.
 
@@ -544,7 +546,7 @@ specs.withDragModel(DragCurveModel::GL);
 specs.withCustomDragCoefficient(0.5);
 ```
 
-=== Integrator
+=== Numerical integrators
 
 Choose a numerical integration method:
 
@@ -556,9 +558,9 @@ MidpointIntegrator midpoint;    // good balance
 RK4Integrator rk4;              // slowest, most accurate
 ```
 
-=== Physics World
+=== Physics world
 
-`PhysicsWorld` manages forces and environments. Environments update the shared `PhysicsContext`, then Forces read it.
+`PhysicsWorld` manages forces and environments. Environments update the shared `PhysicsContext`, then forces read it.
 
 ```cpp
 #include "ballistics/external/PhysicsWorld.h"
@@ -584,7 +586,9 @@ world.addForce(std::make_unique<Lift>());
 world.addForce(std::make_unique<Magnus>());
 ```
 
-=== Simulation Loop
+=== Simulation loop
+
+Example of a simulation loop structure:
 
 ```cpp
 double dt = 0.001;
@@ -600,9 +604,9 @@ while (true)
 }
 ```
 
-=== Coordinate Mapping
+=== Coordinate mapping
 
-The library uses the ENU (East-North-Up) coordinate system internally: x=East, y=North, z=Up. If your engine uses a different convention, set a coordinate mapping once at startup. The integrator converts body state at step boundaries automatically.
+The library uses the ENU (East-North-Up) coordinate system internally: x=East, y=North, z=Up. If your engine uses a different convention, set a coordinate mapping once at startup:
 
 ```cpp
 #include "geography/CoordinateMapping.h"
@@ -626,15 +630,16 @@ CoordinateMapping::set(custom);
 
 With a mapping set, pass positions and velocities in your engine's coordinate system. The library handles internal conversion and returns results in the same user space.
 
-=== Detail Levels
+=== Detail levels
 
 Configure based on required realism level:
 
-*Minimum (Gravity only):*
+*Minimum (gravity only):*
 ```cpp
 PhysicsWorld world;
 world.addForce(std::make_unique<Gravity>());
 ```
+#v(1em)
 
 *+ Aerodynamic drag:*
 ```cpp
@@ -647,20 +652,28 @@ auto specs = ProjectileSpecs::create(0.01, 0.00762)
     .withDragModel(DragCurveModel::G7);
 ```
 
+#v(1em)
+
 *+ Sea-level condition correction:*
 ```cpp
 world.addEnvironment(std::make_unique<Atmosphere>(280.0, 100000.0));
 ```
+
+#v(1em)
 
 *+ Humidity correction:*
 ```cpp
 world.addEnvironment(std::make_unique<Humidity>(60));
 ```
 
+#v(1em)
+
 *+ Wind vector:*
 ```cpp
 world.addEnvironment(std::make_unique<Wind>(Vec3{0.0, 0.0, 2.0}));
 ```
+
+#v(1em)
 
 *+ Coriolis effect:*
 ```cpp
@@ -669,7 +682,9 @@ world.addEnvironment(std::make_unique<Geographic>(lat, lon));
 world.addForce(std::make_unique<Coriolis>());
 ```
 
-*+ Spin drift (Lift + Magnus):*
+#v(1em)
+
+*+ Spin drift (Lift and Magnus):*
 ```cpp
 world.addForce(std::make_unique<Lift>());
 world.addForce(std::make_unique<Magnus>());
@@ -679,7 +694,7 @@ world.addForce(std::make_unique<Magnus>());
 specs.withMuzzle(838.0, Direction::RIGHT, 12.0);
 ```
 
-=== Terminal Ballistics
+=== Terminal ballistics
 
 Material presets for assigning a material property to an object:
 
@@ -702,6 +717,8 @@ struct ImpactInfo {
     double thickness;       // m, effective thickness along velocity direction
 };
 ```
+
+#pagebreak()
 
 Then receive an `ImpactResult` back with classified outcome (`Ricochet`, `Penetration`, `Embed`) and post-impact data:
 
@@ -797,6 +814,9 @@ void CollisionSystem::onCollision()
 
 = Usability testing protocol <testing-protocol>
 
+A small-scale usability study was conducted to evaluate the library in the hands of independent developers. Each test user received the task specification described below, along with access to the library, its documentation, and a set of usage examples. Participants were free to choose a scenario of their own interest and implement it twice: once from scratch, and once using the library. After completing the task, each participant filled out the post-testing questionnaire. The collected responses, together with code review observations made by the author, are summarized in the results section, and issues identified during the study are listed at the end of this appendix along with their resolutions.
+
+
 == Task specification
 
 *Deadline:* April 26, 2026
@@ -838,8 +858,6 @@ task/
   #h(1em) #link("https://github.com/admtrv/BulletPhysics/blob/main/DOCUMENTATION.md")
 - *Usage examples:* \
   #h(1em) #link("https://github.com/admtrv/BulletEngine/tree/main/samples")
-
-#pagebreak()
 
 == Post-testing questionnaire
 
@@ -948,15 +966,24 @@ task/
       #table(
         columns: (2fr, 1fr, 1fr, 1fr, 1fr, 1fr),
         align: (left, center, center, center, center, center),
+        stroke: none,
+        inset: (x: 10pt, y: 9pt),
+
+        table.hline(stroke: 0.5pt),
         table.header([*Criterion*], [*1*], [*2*], [*3*], [*4*], [*5*]),
-        [Integration simplicity],  [], [], [], [], [],
-        [API clarity],             [], [], [], [], [],
-        [Documentation quality],   [], [], [], [], [],
-        [Practical applicability], [], [], [], [], [],
-        [Overall impression],      [], [], [], [], [],
+        table.hline(stroke: 0.5pt),
+
+        [Integration simplicity],  [#radio], [#radio], [#radio], [#radio], [#radio],
+        [API clarity],             [#radio], [#radio], [#radio], [#radio], [#radio],
+        [Documentation quality],   [#radio], [#radio], [#radio], [#radio], [#radio],
+        [Practical applicability], [#radio], [#radio], [#radio], [#radio], [#radio],
+        [Overall impression],      [#radio], [#radio], [#radio], [#radio], [#radio],
+
+        table.hline(stroke: 0.5pt),
       )
     ]
   )
+
 ]
 
 #question[
@@ -980,13 +1007,13 @@ task/
   #blank
 ]
 
-#v(2em)
 
 _Thank you for participating in the testing!_
 
-#pagebreak()
+== Test users
 
-== Test Users
+Although the sample is small, it spans a reasonably diverse range of educational backgrounds, technical experience across different domains, and demographic profiles, which helps to probe the library from several perspectives.
+
 
 #figure(
   text(size: 10pt)[
@@ -1014,21 +1041,11 @@ _Thank you for participating in the testing!_
 
 === Completed tasks
 
-#figure(
-  text(size: 9pt)[
-    #table(
-      columns: (auto, 1fr, 1fr, 1fr),
-      align: (left, center, center, center),
-      table.header(
-        [*Test User*], [*TU1*], [*TU2*], [*TU3*],
-      ),
-      [*Completed tasks*],        [2D and 3D \ OpenGL simulations], [Simulation \ without graphics], [2D OpenGL simulation],
-      [*Code review observation*], [Wrote manual \ coordinate translation at \ the integration boundary], [Did not use \ constant drag coefficient, \ although available], [No unexpected behavior],
-    )
-  ],
-  caption: [Completed tasks and code review observations per test user.]
-)
+ - *TU1.* 2D and 3D OpenGL simulations. Code review observation: wrote manual coordinate translation at the integration boundary to bridge the library's convention.
 
+ - *TU2.* Simulation without graphics. Code review observation: did not use constant drag coefficient, although it is supported and is more suitable for the chosen scenario.
+
+ - *TU3.* 2D OpenGL simulation. Code review observation: no deviations observed.
 
 === Questionnaire responses
 
@@ -1060,19 +1077,23 @@ _Thank you for participating in the testing!_
       [11d],[Practical applicability],[4], [5], [5],
       [11e],[Overall impression],     [5], [5], [5],
       [12], [Main strength], [Modular, \ engine-independent, \ ready-to-use], [Convenient \ preset \ system], [Simple integration, \ C++20, \ good docs],
-      [13], [Main weakness], [Higher entry barrier \ for existing projects], [—], [—],
+      [13], [Main weakness], [Higher entry barrier \ for existing \ projects], [—], [—],
       [14], [Additional comments], [Better onboarding, \ integration examples \ for existing projects], [—], [—],
     )
   ],
   caption: [Questionnaire responses per test user.]
 ) <tab:results>
 
-=== List of problems found
 
-+ *Manual coordinate conversion.* TU1 wrote custom conversion functions to translate between the project's internal coordinate representation and the convention expected by the library. _Resolution:_ a `CoordinateMapping` was introduced, defined once at startup, so that the user works entirely in their project's native convention while the framework handles all conversions transparently.
+=== Findings
 
-+ *Undiscoverable constant drag coefficient.* TU2 did not realize that a constant drag coefficient model was available, although it was already implemented. _Resolution:_ this was a documentation gap. The `DOCUMENTATION.md` file was updated to mention the constant drag coefficient model alongside the drag curve models.
+Across the test users, the library received consistently positive feedback. Quantitative criteria averaged 4.67 out of 5 on integration simplicity, API clarity, and practical applicability, and a 5 out of 5 on documentation quality and overall impression. All participants reported that the library-based implementation took less time and produced more readable code than the from-scratch version, and all three indicated they would choose the library for a comparable real-world task. Recurring positive mentions included the modular and independent architecture, the convenient preset system, and the low friction of the initial setup. Notably, despite not being an explicit design target, the framework was successfully applied in 2D projects, as anticipated, since such use cases can be supported by simply disregarding the third coordinate.
 
+The following weaknesses and issues were identified during the study:
+
++ _Manual coordinate conversion._ TU1 wrote custom conversion functions to translate between the project's internal coordinate representation and the convention expected by the library. Resolution: a `CoordinateMapping` was introduced, defined once at startup, so that the user works entirely in their project's native convention while the framework handles all conversions transparently.
+
++ _Undiscoverable constant drag coefficient._ TU2 did not realize that a constant drag coefficient model was available, although it was already implemented. Resolution: this was a documentation gap. The `DOCUMENTATION.md` file was updated to mention the constant drag coefficient model alongside the drag curve models.
 
 = Scientific part
 

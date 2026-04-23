@@ -371,7 +371,10 @@
   // cestne vyhlasenie
   if style != "pagecount" {
     v(1fr)
+    par(text(1.5em)[ *Declaration* ])
     text(1.1em)[
+      //I hereby declare that AI chatbots powered by Large Language Models (LLMs) were used to assist with grammar checking, formulation, and wording. Any output by LLMs was critically reviewed and edited by the author, and all final decisions regarding content and phrasing were made by the author. The author is solely responsible for the content of this thesis.
+      
       I declare on my honor that I have prepared this work independently, based on consultations with the thesis supervisor and the referenced literature.
       #v(1.5em)
       // TODO: replace this with an appropriate Slovak date
@@ -384,7 +387,12 @@
         grid.cell(
           rowspan: 2,
           align: start,
-          current-date.display("In Bratislava, [day].[month].[year]"),
+          [
+            In Bratislava, 
+            #current-date.display("[day]")
+            #locale.title-page.values.month.at(current-date.month() - 1) 
+            #current-date.display("[year]")
+          ],
         ),
         repeat("."),
         author,
