@@ -516,7 +516,7 @@
     }
   }
   show outline.entry: set block(above: 1.2em)
-  outline(title: locale.contents.title, depth: 3, indent: auto)
+  outline(title: locale.contents.title, depth: 2, indent: auto)
   if figures-outline {
     outline(title: locale.contents.figures, target: figure.where(kind: image))
   }
